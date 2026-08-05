@@ -51,6 +51,14 @@ function syncJeonbuk() {
   }
 
   console.log(`동기화 완료: 추가 ${created}건, 수정 ${updated}건`);
+  return { created, updated };
+}
+
+function doGet() {
+  const result = syncJeonbuk();
+  return ContentService
+    .createTextOutput(`전북현대 일정 동기화 완료\n추가 ${result.created}건\n수정 ${result.updated}건`)
+    .setMimeType(ContentService.MimeType.TEXT);
 }
 
 function installDailyTrigger() {

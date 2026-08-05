@@ -7,23 +7,39 @@
 - `jeonbuk.ics`: 일정 원본. GitHub의 같은 파일을 갱신하고 Apps Script를 실행한다.
 - `apps-script/Code.gs`: Raw ICS를 읽어 Google Calendar의 `전북현대` 캘린더에 일정을 추가하거나 수정하는 Apps Script 원본이다.
 - `apps-script/appsscript.json`: 시간대와 Google Calendar API v3 고급 서비스 설정이다.
+- `sync-calendar.cmd`: Apps Script 웹 앱을 열어 동기화를 실행하는 로컬 실행 파일이다.
 - Raw ICS URL: `https://raw.githubusercontent.com/aassder95/Jeonbuk-Calendar/main/jeonbuk.ics`
 
 이 저장소의 `apps-script/Code.gs`를 Apps Script 웹 편집기의 `Code.gs`와 동일하게 유지한다. 일정 데이터만 바꿀 때는 `jeonbuk.ics`만 수정하면 된다.
 
 ## 동기화 방식
 
-Apps Script의 `syncJeonbuk` 함수를 수동 실행한다.
+### 평소 사용 순서
 
-1. GitHub의 `jeonbuk.ics`를 최신 일정으로 수정하고 `main` 브랜치에 푸시한다.
-2. Raw ICS URL에서 변경 내용이 보이는지 확인한다.
-3. 회사 Google 계정의 Apps Script 프로젝트 `전북현대 일정 동기화`를 연다.
-4. 함수 목록에서 `syncJeonbuk`를 선택하고 실행한다.
-5. 실행 로그의 추가 및 수정 건수를 확인한 뒤 Google Calendar를 새로고침한다.
+1. `jeonbuk.ics`를 최신 일정으로 수정한다.
+2. 변경 내용을 GitHub `main` 브랜치에 푸시한다.
+3. 푸시가 끝나면 저장소 루트의 `sync-calendar.cmd`를 더블클릭한다.
+4. 브라우저에 `전북현대 일정 동기화 완료`가 표시될 때까지 기다린다.
+5. Google Calendar를 새로고침하여 변경된 일정을 확인한다.
 
-매일 실행하는 자동 트리거는 설치하지 않았다. 일정 파일을 갱신한 뒤 직접 실행하면 된다.
+> GitHub에 푸시하는 것만으로 Google Calendar가 변경되지는 않는다. 푸시 후 반드시 `sync-calendar.cmd`를 더블클릭해야 캘린더에 반영된다.
 
-Apps Script 로직을 변경한 경우에는 저장소의 `apps-script/Code.gs` 내용을 Apps Script 웹 편집기의 `Code.gs`에도 반영하고 저장한다. GitHub에 푸시하는 것만으로 Apps Script 프로젝트 코드가 자동 배포되지는 않는다.
+첫 실행에서는 Apps Script 웹 앱 URL을 입력한다. URL은 Git에서 제외되는 `apps-script-web-app-url.txt`에 저장되며, 이후 실행부터는 다시 입력하지 않는다.
+
+### 웹 앱 최초 설정
+
+1. 회사 Google 계정의 Apps Script 프로젝트 `전북현대 일정 동기화`를 연다.
+2. 저장소의 `apps-script/Code.gs` 내용을 웹 편집기의 `Code.gs`에 반영하고 저장한다.
+3. `배포` → `새 배포`를 누르고 유형으로 `웹 앱`을 선택한다.
+4. 실행 사용자는 `나`, 액세스 사용자는 `나만`으로 설정한다.
+5. 배포하고 권한을 허용한 뒤 생성된 `/exec` 웹 앱 URL을 복사한다.
+6. `sync-calendar.cmd`를 더블클릭하고 URL을 한 번 입력한다.
+
+웹 앱을 `모든 사용자`에게 공개하지 않는다. 브라우저에서 계정을 선택하라는 화면이 나오면 `전북현대 일정 동기화` Apps Script를 만든 회사 계정을 선택한다.
+
+웹 앱을 사용하지 못하는 경우에는 Apps Script 편집기에서 `syncJeonbuk`를 직접 실행할 수 있다. 매일 실행하는 자동 트리거는 설치하지 않는다.
+
+Apps Script 로직을 변경한 경우에는 저장소의 `apps-script/Code.gs` 내용을 Apps Script 웹 편집기의 `Code.gs`에도 반영하고 저장한 뒤 웹 앱 배포를 새 버전으로 갱신한다. GitHub에 푸시하는 것만으로 Apps Script 프로젝트 코드가 자동 배포되지는 않는다.
 
 ## 일정 식별과 갱신
 
@@ -59,3 +75,4 @@ Apps Script가 일정 제목과 설명의 대회명을 확인하여 이벤트별
 - Apps Script 고급 서비스: Google Calendar API v3 (`Calendar`)
 - Apps Script 시간대: `Asia/Seoul`
 - 자동 트리거: 사용하지 않음
+- 로컬 실행: `sync-calendar.cmd` → Apps Script 웹 앱 `doGet()`
