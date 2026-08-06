@@ -2,6 +2,8 @@ const CONFIG = {
   calendarName: '전북현대',
   icsUrl: 'https://raw.githubusercontent.com/aassder95/Jeonbuk-Calendar/main/jeonbuk.ics',
   timeZone: 'Asia/Seoul',
+  managedPropertyName: 'jeonbukCalendarManaged',
+  managedPropertyValue: 'true',
   labelNames: [
     'K리그',
     '코리아컵',
@@ -15,6 +17,9 @@ function syncJeonbuk() {
   const labelIds = getLabelIds(calendar.id);
   const ics = UrlFetchApp.fetch(CONFIG.icsUrl).getContentText('UTF-8');
   const fixtures = parseIcs(ics);
+  if (fixtures.length === 0) throw new Error('ICS 일정이 0건이므로 동기화를 중단합니다.');
+
+  const currentUids = new Set(fixtures.map(fixture => fixture.uid));
 
   let created = 0;
   let updated = 0;
@@ -28,6 +33,11 @@ function syncJeonbuk() {
       start: fixture.start,
       end: fixture.end,
       eventLabelId: labelIds[labelName],
+      extendedProperties: {
+        private: {
+          [CONFIG.managedPropertyName]: CONFIG.managedPropertyValue,
+        },
+      },
     };
     const existing = Calendar.Events.list(calendar.id, {
       iCalUID: fixture.uid,
@@ -50,15 +60,41 @@ function syncJeonbuk() {
     }
   }
 
-  console.log(`동기화 완료: 추가 ${created}건, 수정 ${updated}건`);
-  return { created, updated };
+  const deleted = deleteStaleEvents(calendar.id, currentUids);
+  console.log(`동기화 완료: 추가 ${created}건, 수정 ${updated}건, 삭제 ${deleted}건`);
+  return { created, updated, deleted };
 }
 
 function doGet() {
   const result = syncJeonbuk();
   return ContentService
-    .createTextOutput(`전북현대 일정 동기화 완료\n추가 ${result.created}건\n수정 ${result.updated}건`)
+    .createTextOutput(`전북현대 일정 동기화 완료\n추가 ${result.created}건\n수정 ${result.updated}건\n삭제 ${result.deleted}건`)
     .setMimeType(ContentService.MimeType.TEXT);
+}
+
+function deleteStaleEvents(calendarId, currentUids) {
+  let deleted = 0;
+  let pageToken = null;
+
+  do {
+    const options = {
+      maxResults: 2500,
+      privateExtendedProperty: `${CONFIG.managedPropertyName}=${CONFIG.managedPropertyValue}`,
+      showDeleted: false,
+    };
+    if (pageToken) options.pageToken = pageToken;
+
+    const response = Calendar.Events.list(calendarId, options);
+    for (const event of response.items || []) {
+      if (currentUids.has(event.iCalUID)) continue;
+      Calendar.Events.remove(calendarId, event.id, { sendUpdates: 'none' });
+      deleted++;
+    }
+
+    pageToken = response.nextPageToken || null;
+  } while (pageToken);
+
+  return deleted;
 }
 
 function installDailyTrigger() {
