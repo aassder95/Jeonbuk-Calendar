@@ -46,7 +46,7 @@ function syncJeonbuk() {
     }).items || [];
 
     if (existing.length > 0) {
-      Calendar.Events.patch(event, calendar.id, existing[0].id, {
+      Calendar.Events.update(event, calendar.id, existing[0].id, {
         eventLabelVersion: 1,
         sendUpdates: 'none',
       });
