@@ -1,6 +1,6 @@
 const CONFIG = {
   calendarName: '전북현대',
-  icsUrl: 'https://raw.githubusercontent.com/aassder95/Jeonbuk-Calendar/main/jeonbuk.ics',
+  icsUrl: 'https://raw.githubusercontent.com/aassder95/JeonbukCalendar/main/jeonbuk.ics',
   timeZone: 'Asia/Seoul',
   managedPropertyName: 'jeonbukCalendarManaged',
   managedPropertyValue: 'true',

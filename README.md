@@ -8,7 +8,7 @@
 - `apps-script/Code.gs`: Raw ICS를 읽어 Google Calendar의 `전북현대` 캘린더에 일정을 추가, 수정, 삭제하는 Apps Script 원본이다.
 - `apps-script/appsscript.json`: 시간대와 Google Calendar API v3 고급 서비스 설정이다.
 - `sync-calendar.cmd`: Apps Script 웹 앱을 열어 동기화를 실행하는 로컬 실행 파일이다.
-- Raw ICS URL: `https://raw.githubusercontent.com/aassder95/Jeonbuk-Calendar/main/jeonbuk.ics`
+- Raw ICS URL: `https://raw.githubusercontent.com/aassder95/JeonbukCalendar/main/jeonbuk.ics`
 
 이 저장소의 `apps-script/Code.gs`를 Apps Script 웹 편집기의 `Code.gs`와 동일하게 유지한다. 일정 데이터만 바꿀 때는 `jeonbuk.ics`만 수정하면 된다.
 
@@ -36,7 +36,7 @@
 6. `sync-calendar.cmd`를 더블클릭하고 URL을 한 번 입력한다.
 7. 처음 열린 전북현대 전용 Edge 프로필에서 Apps Script를 배포한 개인 Google 계정으로 로그인한다.
 
-웹 앱을 `모든 사용자`에게 공개하지 않는다. Google은 여러 계정에 동시에 로그인한 브라우저 프로필에서 Apps Script 웹 앱 사용을 지원하지 않으므로, `sync-calendar.cmd`는 `%LOCALAPPDATA%\Jeonbuk-Calendar\EdgeProfile`의 독립 Edge 프로필을 사용한다. 최초 로그인 이후에는 같은 개인 계정 로그인 상태를 재사용한다.
+웹 앱을 `모든 사용자`에게 공개하지 않는다. Google은 여러 계정에 동시에 로그인한 브라우저 프로필에서 Apps Script 웹 앱 사용을 지원하지 않으므로, `sync-calendar.cmd`는 `%LOCALAPPDATA%\JeonbukCalendar\EdgeProfile`의 독립 Edge 프로필을 사용한다. 최초 로그인 이후에는 같은 개인 계정 로그인 상태를 재사용한다.
 
 웹 앱을 사용하지 못하는 경우에는 Apps Script 편집기에서 `syncJeonbuk`를 직접 실행할 수 있다. 매일 실행하는 자동 트리거는 설치하지 않는다.
 

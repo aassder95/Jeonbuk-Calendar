@@ -19,7 +19,7 @@ if not defined WEB_APP_URL (
 )
 
 set "EDGE_EXE=%ProgramFiles(x86)%\Microsoft\Edge\Application\msedge.exe"
-set "EDGE_PROFILE_DIR=%LOCALAPPDATA%\Jeonbuk-Calendar\EdgeProfile"
+set "EDGE_PROFILE_DIR=%LOCALAPPDATA%\JeonbukCalendar\EdgeProfile"
 
 if not exist "!EDGE_EXE!" (
   echo Microsoft Edge was not found.
