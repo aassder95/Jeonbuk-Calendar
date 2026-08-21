@@ -18,5 +18,14 @@ if not defined WEB_APP_URL (
   >"%URL_FILE%" echo !WEB_APP_URL!
 )
 
-start "" "!WEB_APP_URL!"
+set "EDGE_EXE=%ProgramFiles(x86)%\Microsoft\Edge\Application\msedge.exe"
+set "EDGE_PROFILE_DIR=%LOCALAPPDATA%\Jeonbuk-Calendar\EdgeProfile"
+
+if not exist "!EDGE_EXE!" (
+  echo Microsoft Edge was not found.
+  pause
+  exit /b 1
+)
+
+start "" "!EDGE_EXE!" --user-data-dir="!EDGE_PROFILE_DIR!" "!WEB_APP_URL!"
 endlocal
